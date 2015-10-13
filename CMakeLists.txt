@@ -14,8 +14,7 @@ set(SOURCES ${PROJECT_SOURCE_DIR}/src/main.cpp
 			${PROJECT_SOURCE_DIR}/include/SpaceShip.h
 			${PROJECT_SOURCE_DIR}/include/GameControls.h 
 			${PROJECT_SOURCE_DIR}/include/KeyRecorder.h
-
-)
+			)
 
 # see what platform we are on and set platform defines
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
