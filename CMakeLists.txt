@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.1)
 # Name of the project
 set(PROJECT_NAME AdvancedGameKeyControl)
 project(${PROJECT_NAME})
@@ -15,6 +15,8 @@ set(SOURCES ${PROJECT_SOURCE_DIR}/src/main.cpp
 			${PROJECT_SOURCE_DIR}/include/GameControls.h 
 			${PROJECT_SOURCE_DIR}/include/KeyRecorder.h
 			)
+# Set to C++ 11
+set(CMAKE_CXX_STANDARD 11)
 
 # see what platform we are on and set platform defines
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
