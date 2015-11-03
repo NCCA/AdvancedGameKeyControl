@@ -13,26 +13,22 @@
 #include <QFileDialog>
 #include "GameControls.h"
 
-
-const static float s_shipUpdate=0.2;
-
-
 //----------------------------------------------------------------------------------------------------------------------
 /// @brief the increment for x/y translation with mouse movement
 //----------------------------------------------------------------------------------------------------------------------
-const static float INCREMENT=0.01;
+constexpr static float INCREMENT=0.01f;
 //----------------------------------------------------------------------------------------------------------------------
 /// @brief the increment for the wheel zoom
 //----------------------------------------------------------------------------------------------------------------------
-const static float ZOOM=0.1;
+constexpr static float ZOOM=0.1f;
 
 NGLScene::NGLScene()
 {
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
   m_rotate=false;
   // mouse rotation values set to 0
-  m_spinXFace=0;
-  m_spinYFace=0;
+  m_spinXFace=0.0f;
+  m_spinYFace=0.0f;
   setTitle("Game style key control in Qt");
   m_recording=false;
   m_playbackActive=false;
@@ -56,6 +52,12 @@ void NGLScene::resizeGL(QResizeEvent *_event)
 
 }
 
+void NGLScene::resizeGL(int _w , int _h)
+{
+  m_cam.setShape(45.0f,(float)_w/_h,0.05f,350.0f);
+  m_width=_w*devicePixelRatio();
+  m_height=_h*devicePixelRatio();
+}
 
 void NGLScene::initializeGL()
 {
@@ -103,31 +105,31 @@ void NGLScene::initializeGL()
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
   // First create Values for the camera position
-  ngl::Vec3 from(0,0,80);
-  ngl::Vec3 to(0,0,0);
-  ngl::Vec3 up(0,1,0);
+  ngl::Vec3 from(0.0f,0.0f,80.0f);
+  ngl::Vec3 to(0.0f,0.0f,0.0f);
+  ngl::Vec3 up(0.0f,1.0f,0.0f);
   // now load to our new camera
   m_cam.set(from,to,up);
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
-  m_cam.setShape(45,720.0f/576.0f,0.05f,350.0f);
-  shader->setShaderParam3f("viewerPos",m_cam.getEye().m_x,m_cam.getEye().m_y,m_cam.getEye().m_z);
+  m_cam.setShape(45.0f,720.0f/576.0f,0.05f,350.0f);
+  shader->setUniform("viewerPos",m_cam.getEye().toVec3());
   // now create our light this is done after the camera so we can pass the
   // transpose of the projection matrix to the light to do correct eye space
   // transformations
   ngl::Mat4 iv=m_cam.getViewMatrix();
   iv.transpose();
-  ngl::Light light(ngl::Vec3(0,0,-2),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::LightModes::DIRECTIONALLIGHT);
+  ngl::Light light(ngl::Vec3(0.0f,0.0f,-2.0f),ngl::Colour(1.0f,1.0f,1.0f,1.0f),ngl::Colour(1.0f,1.0f,1.0f,1.0f),ngl::LightModes::DIRECTIONALLIGHT);
   light.setTransform(iv);
   // load these values to the shader as well
   light.loadToShader("light");
   ngl::Material m(ngl::STDMAT::GOLD);
   m.loadToShader("material");
   // create our spaceship
-  m_ship= new SpaceShip(ngl::Vec3(0,0,0),"models/SpaceShip.obj");
+  m_ship= new SpaceShip(ngl::Vec3(0.0f,0.0f,0.0f),"models/SpaceShip.obj");
   m_text = new ngl::Text(QFont("Arial",12));
   m_text->setScreenSize(width(),height());
-  m_text->setColour(1,1,1);
+  m_text->setColour(1.0f,1.0f,1.0f);
   // as re-size is not explicitly called we need to do this.
   glViewport(0,0,width(),height());
   // now we start a timer and assign it to the m_updateShipTimer variable
@@ -151,14 +153,14 @@ void NGLScene::paintGL()
 	if (m_recording==true)
 	{
 	 QString text=QString("Recording");
-	 m_text->setColour(1,0,0);
+	 m_text->setColour(1.0f,0.0f,0.0f);
 	 m_text->renderText(10,18,text);
 	}
 	if (m_playbackActive==true)
 	{
 	 // now render the text using the QT renderText helper function
 	QString text=QString("Playback doing frame %1").arg(m_currentPlaybackFrame);
-	m_text->setColour(1,1,0);
+	m_text->setColour(1.0f,1.0f,0.0f);
 	m_text->renderText(10,18,text);
 	}
 }
