@@ -68,7 +68,6 @@ eyeDirection = normalize(viewerPos - worldPosition.xyz);
 /// @brief the vertex in eye co-ordinates  homogeneous
 vec4 eyeCord=MV*vec4(inVert,1);
 
-vPosition = eyeCord.xyz / eyeCord.w;;
 
 float dist;
 

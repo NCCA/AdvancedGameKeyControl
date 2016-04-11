@@ -8,8 +8,8 @@
 #include "SpaceShip.h"
 #include "KeyRecorder.h"
 #include <QOpenGLWindow>
-
 #include <QSet>
+#include <memory>
 //----------------------------------------------------------------------------------------------------------------------
 /// @file NGLScene.h
 /// @brief this class inherits from the Qt OpenGLWindow and allows us to use NGL to draw OpenGL
@@ -124,7 +124,7 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief text class for drawing
     //----------------------------------------------------------------------------------------------------------------------
-    ngl::Text *m_text;
+    std::unique_ptr <ngl::Text> m_text;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief a timer triggered by the startTimer call in the ctor this is called
     /// to update the ship position based on the key presses
@@ -133,7 +133,7 @@ private:
 
     int m_redrawTimer;
     /// @brief a pointer to our spaceship
-    SpaceShip *m_ship;
+    std::unique_ptr <SpaceShip> m_ship;
 
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief method to load transform matrices to the shader

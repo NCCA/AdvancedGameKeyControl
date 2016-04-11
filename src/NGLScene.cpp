@@ -46,17 +46,17 @@ NGLScene::~NGLScene()
 void NGLScene::resizeGL(QResizeEvent *_event)
 {
   // now set the camera size values as the screen size has changed
-  m_cam.setShape(45,(float)width()/height(),0.05f,350.0f);
-  m_width=_event->size().width()*devicePixelRatio();
-  m_height=_event->size().height()*devicePixelRatio();
+  m_cam.setShape(45.0f,static_cast<float>(width())/height(),0.05f,350.0f);
+  m_width=static_cast<int>(_event->size().width()*devicePixelRatio());
+  m_height=static_cast<int>(_event->size().height()*devicePixelRatio());
 
 }
 
 void NGLScene::resizeGL(int _w , int _h)
 {
-  m_cam.setShape(45.0f,(float)_w/_h,0.05f,350.0f);
-  m_width=_w*devicePixelRatio();
-  m_height=_h*devicePixelRatio();
+  m_cam.setShape(45.0f,static_cast<float>(_w)/_h,0.05f,350.0f);
+  m_width=static_cast<int>(_w*devicePixelRatio());
+  m_height=static_cast<int>(_h*devicePixelRatio());
 }
 
 void NGLScene::initializeGL()
@@ -74,33 +74,27 @@ void NGLScene::initializeGL()
   // grab an instance of shader manager
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
   // we are creating a shader called Phong
-  shader->createShaderProgram("Phong");
+  constexpr auto shaderName="Phong";
+  constexpr auto vertexShader="PhongVertex";
+  constexpr auto fragmentShader="PhongFragment";
+  shader->createShaderProgram(shaderName);
   // now we are going to create empty shaders for Frag and Vert
-  shader->attachShader("PhongVertex",ngl::ShaderType::VERTEX);
-  shader->attachShader("PhongFragment",ngl::ShaderType::FRAGMENT);
+  shader->attachShader(vertexShader,ngl::ShaderType::VERTEX);
+  shader->attachShader(fragmentShader,ngl::ShaderType::FRAGMENT);
   // attach the source
-  shader->loadShaderSource("PhongVertex","shaders/PhongVertex.glsl");
-  shader->loadShaderSource("PhongFragment","shaders/PhongFragment.glsl");
+  shader->loadShaderSource(vertexShader,"shaders/PhongVertex.glsl");
+  shader->loadShaderSource(fragmentShader,"shaders/PhongFragment.glsl");
   // compile the shaders
-  shader->compileShader("PhongVertex");
-  shader->compileShader("PhongFragment");
+  shader->compileShader(vertexShader);
+  shader->compileShader(fragmentShader);
   // add them to the program
-  shader->attachShaderToProgram("Phong","PhongVertex");
-  shader->attachShaderToProgram("Phong","PhongFragment");
-  // now bind the shader attributes for most NGL primitives we use the following
-  // layout attribute 0 is the vertex data (x,y,z)
-  // if we are using glsl #version 400 we don't need to do this if we use
-  // the layout ( location = x ) elements in our shader
-  shader->bindAttribute("Phong",0,"inVert");
-  // attribute 1 is the UV data u,v (if present)
-  shader->bindAttribute("Phong",1,"inUV");
-  // attribute 2 are the normals x,y,z
-  shader->bindAttribute("Phong",2,"inNormal");
+  shader->attachShaderToProgram(shaderName,vertexShader);
+  shader->attachShaderToProgram(shaderName,fragmentShader);
 
   // now we have associated this data we can link the shader
-  shader->linkProgramObject("Phong");
+  shader->linkProgramObject(shaderName);
   // and make it active ready to load values
-  (*shader)["Phong"]->use();
+  (*shader)[shaderName]->use();
 
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
@@ -126,12 +120,10 @@ void NGLScene::initializeGL()
   ngl::Material m(ngl::STDMAT::GOLD);
   m.loadToShader("material");
   // create our spaceship
-  m_ship= new SpaceShip(ngl::Vec3(0.0f,0.0f,0.0f),"models/SpaceShip.obj");
-  m_text = new ngl::Text(QFont("Arial",12));
+  m_ship.reset(new SpaceShip(ngl::Vec3(0.0f,0.0f,0.0f),"models/SpaceShip.obj"));
+  m_text.reset (new ngl::Text(QFont("Arial",12)) );
   m_text->setScreenSize(width(),height());
   m_text->setColour(1.0f,1.0f,1.0f);
-  // as re-size is not explicitly called we need to do this.
-  glViewport(0,0,width(),height());
   // now we start a timer and assign it to the m_updateShipTimer variable
   // this will be triggered at an interval of every 5ms
   // to stop this timer we call killTimer(m_animationTimer) we can have
@@ -147,6 +139,7 @@ void NGLScene::paintGL()
 {
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glViewport(0,0,m_width,m_height);
   // now load these values to the shader
   m_ship->draw("Phong",&m_cam);
 
@@ -175,8 +168,8 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   {
     int diffx=_event->x()-m_origX;
     int diffy=_event->y()-m_origY;
-    m_spinXFace += (float) 0.5f * diffy;
-    m_spinYFace += (float) 0.5f * diffx;
+    m_spinXFace +=  0.5f * diffy;
+    m_spinYFace +=  0.5f * diffx;
     m_origX = _event->x();
     m_origY = _event->y();
     update();
@@ -185,8 +178,8 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
         // right mouse translate code
   else if(m_translate && _event->buttons() == Qt::RightButton)
   {
-    int diffX = (int)(_event->x() - m_origXPos);
-    int diffY = (int)(_event->y() - m_origYPos);
+    int diffX = static_cast<int>(_event->x() - m_origXPos);
+    int diffY = static_cast<int>(_event->y() - m_origYPos);
     m_origXPos=_event->x();
     m_origYPos=_event->y();
     m_modelPos.m_x += INCREMENT * diffX;

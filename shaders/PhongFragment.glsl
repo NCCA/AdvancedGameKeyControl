@@ -34,7 +34,6 @@ in vec3 lightDir;
 // out the blinn half vector
 in vec3 halfVector;
 in vec3 eyeDirection;
-in vec3 vPosition;
 
 
 /// @brief a function to compute point light values
@@ -67,7 +66,6 @@ return ambient + diffuse + specular;
 
 void main ()
 {
-
-fragColour=pointLight();
+  fragColour=pointLight();
 }
 

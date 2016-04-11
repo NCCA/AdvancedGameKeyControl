@@ -29,7 +29,7 @@ struct SpaceShipMotion
 
 
 // can be given to designers to tweak (loaded from resource possibly)
-static const SpaceShipMotion g_motionTable[] =
+constexpr SpaceShipMotion g_motionTable[] =
 {
 	{ 0.0f, 0.0f, 0.0f }, // 0
 	{ 0.0f, 1.0f, 0.0f }, // kUp
@@ -73,8 +73,8 @@ static const SpaceShipMotion g_motionTable[] =
 	{ 0.0f, 0.0f, 1.0f }, // kUpDown (nonsense) & kLeftRight (nonsense)
 };
 
-const static float s_xExtents = 40;
-const static float s_yExtents = 30;
+constexpr float s_xExtents = 40.0f;
+constexpr float s_yExtents = 30.0f;
 
 
 #endif
