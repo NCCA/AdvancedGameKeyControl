@@ -21,6 +21,7 @@ SOURCES+= $$PWD/src/NGLScene.cpp    \
 					$$PWD/src/SpaceShip.cpp
 # same for the .h files
 HEADERS+= $$PWD/include/NGLScene.h \
+          $$PWD/include/WindowParams.h \
 					$$PWD/include/GameControls.h \
 					$$PWD/include/KeyRecorder.h \
 					$$PWD/include/SpaceShip.h
