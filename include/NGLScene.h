@@ -40,15 +40,15 @@ class NGLScene : public QOpenGLWindow
     /// @brief the initialize class is called once when the window is created and we have a valid GL context
     /// use this to setup any default GL stuff
     //----------------------------------------------------------------------------------------------------------------------
-    void initializeGL();
+    void initializeGL() override;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief this is called everytime we want to draw the scene
     //----------------------------------------------------------------------------------------------------------------------
-    void paintGL();
+    void paintGL() override;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief this is called everytime we resize the screen
     //----------------------------------------------------------------------------------------------------------------------
-    void resizeGL(int _w, int _h);
+    void resizeGL(int _w, int _h) override;
 
 private:
     //----------------------------------------------------------------------------------------------------------------------
@@ -105,44 +105,44 @@ private:
     /// @brief this method is called every time a mouse is moved
     /// @param _event the Qt Event structure
     //----------------------------------------------------------------------------------------------------------------------
-    void mouseMoveEvent (QMouseEvent * _event );
+    void mouseMoveEvent (QMouseEvent * _event ) override;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief this method is called everytime the mouse button is pressed
     /// inherited from QObject and overridden here.
     /// @param _event the Qt Event structure
     //----------------------------------------------------------------------------------------------------------------------
-    void mousePressEvent ( QMouseEvent *_event);
+    void mousePressEvent ( QMouseEvent *_event) override;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief this method is called everytime the mouse button is released
     /// inherited from QObject and overridden here.
     /// @param _event the Qt Event structure
     //----------------------------------------------------------------------------------------------------------------------
-    void mouseReleaseEvent ( QMouseEvent *_event );
+    void mouseReleaseEvent ( QMouseEvent *_event ) override;
 
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief this method is called everytime the mouse wheel is moved
     /// inherited from QObject and overridden here.
     /// @param _event the Qt Event structure
     //----------------------------------------------------------------------------------------------------------------------
-    void wheelEvent( QWheelEvent *_event);
+    void wheelEvent( QWheelEvent *_event) override;
 
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief processKeyDown passed from the main window class
     /// @param *_event a pointer to the QKeyEvent passed from main window
     /// class
     //----------------------------------------------------------------------------------------------------------------------
-    void keyPressEvent(QKeyEvent *_event );
+    void keyPressEvent(QKeyEvent *_event ) override;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief processKeyUp passed from the main window class
     /// @param *_event a pointer to the QKeyEvent passed from main window
     /// class
     //----------------------------------------------------------------------------------------------------------------------
-    void keyReleaseEvent(QKeyEvent *_event );
+    void keyReleaseEvent(QKeyEvent *_event ) override;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief called when the timer triggers used to update and draw
     /// @param *_event a pointer to the timer event id
     //----------------------------------------------------------------------------------------------------------------------
-    void timerEvent( QTimerEvent *_event);
+    void timerEvent( QTimerEvent *_event) override;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief update ship based on stored key movements
     //----------------------------------------------------------------------------------------------------------------------
