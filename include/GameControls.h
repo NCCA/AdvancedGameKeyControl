@@ -1,5 +1,5 @@
-#ifndef GAME_CONTROLS_H__
-#define GAME_CONTROLS_H__
+#ifndef GAME_CONTROLS_H_
+#define GAME_CONTROLS_H_
 
 enum GameControls
 {

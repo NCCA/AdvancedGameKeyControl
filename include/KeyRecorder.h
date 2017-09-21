@@ -1,5 +1,5 @@
-#ifndef __KEY_RECORDER_H__
-#define __KEY_RECORDER_H__
+#ifndef KEY_RECORDER_H_
+#define KEY_RECORDER_H_
 
 #include <vector>
 #include <string>
@@ -11,7 +11,7 @@
 class KeyRecorder
 {
 	public :
-		KeyRecorder();
+    KeyRecorder()=default;
 		~KeyRecorder();
     void load(const std::string &_fname);
     void save(const std::string &_fname);
@@ -30,7 +30,7 @@ private :
 
 		std::vector<uint8_t> m_replayFrames;
 		/// @brief the start position
-    ngl::Vec3 m_startPos;
+    ngl::Vec3 m_startPos=ngl::Vec3::zero();
 
 };
 

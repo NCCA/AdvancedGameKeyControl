@@ -2,7 +2,7 @@
 #include "GameControls.h"
 #include <ngl/ShaderLib.h>
 
-SpaceShip::SpaceShip(ngl::Vec3 _pos, std::string _fname )
+SpaceShip::SpaceShip(const ngl::Vec3 &_pos, const std::string &_fname )
  {
    m_pos=_pos;
    m_mesh.reset(new ngl::Obj(_fname));
