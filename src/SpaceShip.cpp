@@ -18,9 +18,12 @@ void SpaceShip::draw(  const std::string &_shader, ngl::Camera *_cam )
 
   m_transform.setPosition(m_pos);
 	m_transform.setRotation(0,m_rotation,0);
-	ngl::Mat4 MVP=m_transform.getMatrix()*_cam->getVPMatrix();
+  ngl::Mat4 MVP=_cam->getVPMatrix()*m_transform.getMatrix();
   shader->setUniform("MVP",MVP);
-
+  ngl::Mat4 MV=_cam->getViewMatrix()*m_transform.getMatrix();
+  ngl::Mat3 normalMatrix=MV;
+  normalMatrix.inverse().transpose();
+  shader->setUniform("normalMatrix",normalMatrix);
   m_mesh->draw();
 }
 
