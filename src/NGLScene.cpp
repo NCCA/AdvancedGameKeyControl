@@ -1,16 +1,13 @@
 #include <QMouseEvent>
 #include <QGuiApplication>
 #include <QApplication>
+#include <QFileDialog>
 
 #include "NGLScene.h"
-#include <ngl/Camera.h>
-#include <ngl/Light.h>
 #include <ngl/Transformation.h>
-#include <ngl/Material.h>
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
-#include <QFileDialog>
 #include "GameControls.h"
 
 
@@ -33,10 +30,12 @@ NGLScene::~NGLScene()
 
 void NGLScene::resizeGL(int _w , int _h)
 {
-  m_cam.setShape(45.0f,static_cast<float>(_w)/_h,0.05f,350.0f);
+  m_project=ngl::perspective(45.0f,static_cast<float>(_w)/_h,0.05f,350.0f);
   m_win.width=static_cast<int>(_w*devicePixelRatio());
   m_win.height=static_cast<int>(_h*devicePixelRatio());
 }
+
+
 
 void NGLScene::initializeGL()
 {
@@ -52,28 +51,9 @@ void NGLScene::initializeGL()
   // now to load the shader and set the values
   // grab an instance of shader manager
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  // we are creating a shader called Phong
-  constexpr auto shaderName="Phong";
-  constexpr auto vertexShader="PhongVertex";
-  constexpr auto fragmentShader="PhongFragment";
-  shader->createShaderProgram(shaderName);
-  // now we are going to create empty shaders for Frag and Vert
-  shader->attachShader(vertexShader,ngl::ShaderType::VERTEX);
-  shader->attachShader(fragmentShader,ngl::ShaderType::FRAGMENT);
-  // attach the source
-  shader->loadShaderSource(vertexShader,"shaders/PhongVertex.glsl");
-  shader->loadShaderSource(fragmentShader,"shaders/PhongFragment.glsl");
-  // compile the shaders
-  shader->compileShader(vertexShader);
-  shader->compileShader(fragmentShader);
-  // add them to the program
-  shader->attachShaderToProgram(shaderName,vertexShader);
-  shader->attachShaderToProgram(shaderName,fragmentShader);
+  (*shader)[ngl::nglColourShader]->use();
+  shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
 
-  // now we have associated this data we can link the shader
-  shader->linkProgramObject(shaderName);
-  // and make it active ready to load values
-  (*shader)[shaderName]->use();
 
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
@@ -82,22 +62,10 @@ void NGLScene::initializeGL()
   ngl::Vec3 to(0.0f,0.0f,0.0f);
   ngl::Vec3 up(0.0f,1.0f,0.0f);
   // now load to our new camera
-  m_cam.set(from,to,up);
+  m_view=ngl::lookAt(from,to,up);
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
-  m_cam.setShape(45.0f,720.0f/576.0f,0.05f,350.0f);
-  shader->setUniform("viewerPos",m_cam.getEye().toVec3());
-  // now create our light this is done after the camera so we can pass the
-  // transpose of the projection matrix to the light to do correct eye space
-  // transformations
-  ngl::Mat4 iv=m_cam.getViewMatrix();
-  iv.transpose();
-  ngl::Light light(ngl::Vec3(0.0f,0.0f,-2.0f),ngl::Colour(1.0f,1.0f,1.0f,1.0f),ngl::Colour(1.0f,1.0f,1.0f,1.0f),ngl::LightModes::DIRECTIONALLIGHT);
-  light.setTransform(iv);
-  // load these values to the shader as well
-  light.loadToShader("light");
-  ngl::Material m(ngl::STDMAT::GOLD);
-  m.loadToShader("material");
+  m_project=ngl::perspective(45.0f,720.0f/576.0f,0.05f,350.0f);
   // create our spaceship
   m_ship.reset(new SpaceShip(ngl::Vec3(0.0f,0.0f,0.0f),"models/SpaceShip.obj"));
   m_text.reset (new ngl::Text(QFont("Arial",12)) );
@@ -120,7 +88,7 @@ void NGLScene::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_win.width,m_win.height);
   // now load these values to the shader
-  m_ship->draw("Phong",&m_cam);
+  m_ship->draw(ngl::nglColourShader,m_project*m_view);
 
 	if (m_recording==true)
 	{
@@ -282,7 +250,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event	)
 		case Qt::Key_S :
 		{
 		QString filename = QFileDialog::getSaveFileName(
-						0,
+            nullptr,
 						tr("Save Keypresses"),
 						QDir::currentPath(),
 						tr("*.kp") );
@@ -295,7 +263,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event	)
 	case Qt::Key_L :
 	{
 	QString filename = QFileDialog::getOpenFileName(
-					0,
+          nullptr,
 					tr("load Keypresses"),
 					QDir::currentPath(),
 					tr("*.kp") );

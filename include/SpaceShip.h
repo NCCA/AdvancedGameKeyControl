@@ -1,7 +1,6 @@
 #ifndef SPACESHIP_H_
 #define SPACESHIP_H_
 
-#include <ngl/Camera.h>
 #include <ngl/Vec3.h>
 #include <ngl/Obj.h>
 #include <ngl/Transformation.h>
@@ -14,7 +13,7 @@ class SpaceShip
     /// @param _fname the name of mesh to load
     SpaceShip(const ngl::Vec3 &_pos, const std::string &_fname );
    ///@brief draw method
-   void draw(const std::string &_shader,ngl::Camera *_cam );
+   void draw(const std::string &_shader, const ngl::Mat4 &_viewProject );
 
    void move(uint8_t _keysPressed	);
 
