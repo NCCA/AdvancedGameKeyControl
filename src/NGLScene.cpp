@@ -1,15 +1,13 @@
-#include <QMouseEvent>
-#include <QGuiApplication>
-#include <QApplication>
-#include <QFileDialog>
-
 #include "NGLScene.h"
 #include <ngl/Transformation.h>
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
 #include "GameControls.h"
-
+#include <QMouseEvent>
+#include <QGuiApplication>
+#include <QApplication>
+#include <QFileDialog>
 
 NGLScene::NGLScene()
 {

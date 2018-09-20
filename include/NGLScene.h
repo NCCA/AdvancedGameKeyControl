@@ -1,12 +1,12 @@
 #ifndef NGLSCENE_H_
 #define NGLSCENE_H_
-#include <QOpenGLWindow>
-#include <QSet>
 #include "WindowParams.h"
 #include "SpaceShip.h"
 #include <ngl/Text.h>
 #include "SpaceShip.h"
 #include "KeyRecorder.h"
+#include <QOpenGLWindow>
+#include <QSet>
 #include <memory>
 //----------------------------------------------------------------------------------------------------------------------
 /// @file NGLScene.h
