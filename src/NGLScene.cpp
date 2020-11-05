@@ -39,18 +39,15 @@ void NGLScene::initializeGL()
 {
   // we must call this first before any other GL commands to load and link the
   // gl commands from the lib, if this is not done program will crash
-  ngl::NGLInit::instance();
+  ngl::NGLInit::initialize();
 
   glClearColor(0.0f,0.0f,0.0f,1.0f);			   // black Background
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
-  // now to load the shader and set the values
-  // grab an instance of shader manager
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  (*shader)[ngl::nglColourShader]->use();
-  shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
+  ngl::ShaderLib::use(ngl::nglColourShader);
+  ngl::ShaderLib::setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
 
 
   // Now we will create a basic Camera from the graphics library
@@ -65,8 +62,8 @@ void NGLScene::initializeGL()
   // The final two are near and far clipping planes of 0.5 and 10
   m_project=ngl::perspective(45.0f,720.0f/576.0f,0.05f,350.0f);
   // create our spaceship
-  m_ship.reset(new SpaceShip(ngl::Vec3(0.0f,0.0f,0.0f),"models/SpaceShip.obj"));
-  m_text.reset (new ngl::Text(QFont("Arial",12)) );
+  m_ship=std::make_unique<SpaceShip>(ngl::Vec3(0.0f,0.0f,0.0f),"models/SpaceShip.obj");
+  m_text=std::make_unique<ngl::Text>("fonts/Arial.ttf",12);
   m_text->setScreenSize(width(),height());
   m_text->setColour(1.0f,1.0f,1.0f);
   // now we start a timer and assign it to the m_updateShipTimer variable
@@ -90,16 +87,13 @@ void NGLScene::paintGL()
 
 	if (m_recording==true)
 	{
-	 QString text=QString("Recording");
 	 m_text->setColour(1.0f,0.0f,0.0f);
-	 m_text->renderText(10,18,text);
+	 m_text->renderText(10,18,"Recording");
 	}
 	if (m_playbackActive==true)
 	{
-	 // now render the text using the QT renderText helper function
-	QString text=QString("Playback doing frame %1").arg(m_currentPlaybackFrame);
 	m_text->setColour(1.0f,1.0f,0.0f);
-	m_text->renderText(10,18,text);
+	m_text->renderText(10,18,fmt::format("Playback doing frame {}",m_currentPlaybackFrame));
 	}
 }
 
