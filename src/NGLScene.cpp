@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QtGlobal>
+#include <iostream>
 NGLScene::NGLScene()
 {
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
